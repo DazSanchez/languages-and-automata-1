@@ -1,5 +1,6 @@
 jflex-1.7.0/
 *.pdf
+*.docx
 *.class
 *.java
 *.java~
