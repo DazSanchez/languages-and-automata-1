@@ -1,0 +1,6 @@
+turnOn prog
+    a is 10i <nxt
+    b is vb <nxt
+    resultado is a lt 9i <nxt
+    push resultado iseq b <nxt
+turnOff

@@ -1,0 +1,34 @@
+package analizador;
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+parser code {:
+	public static void main(String[] arg) {
+		/* Crea un objeto parser */
+		parser parserObj = new parser();
+		/* Asigna el Scanner */
+		Yylex miAnalizadorLexico = new Yylex(new InputStreamReader(System.in));
+		parserObj.setScanner(miAnalizadorLexico);
+		try{
+			parserObj.parse();
+		} catch(Exception x){
+			System.out.print("Error  No. ");
+		}
+	}
+:};
+
+terminal OR, AND, CLOG, IDENT;
+
+non terminal expr_list, expr;
+
+precedence left AND, OR;
+
+expr_list ::= expr_list expr | expr;
+
+expr ::= expr AND expr
+        | expr OR expr
+        | CLOG
+        | IDENT
+        ;

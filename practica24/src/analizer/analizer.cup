@@ -1,0 +1,41 @@
+package analizer;
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+parser code {:
+	public static void main(String[] arg) {
+		/* Crea un objeto parser */
+		parser parserObj = new parser();
+		/* Asigna el Scanner */
+		Yylex miAnalizadorLexico = new Yylex(new InputStreamReader(System.in));
+		parserObj.setScanner(miAnalizadorLexico);
+		try{
+			parserObj.parse();
+		} catch(Exception x){
+                    System.err.println(x.getMessage());
+		}
+	}
+:};
+
+terminal MIN, MON;
+terminal EQUI, ASSIGN, DOSP, EQ;
+terminal EXP_NUM, INT;
+terminal IDENT;
+
+non terminal expr_list, expr;
+
+precedence left MIN, MON;
+precedence left EQUI, ASSIGN, DOSP, EQ;
+
+expr_list ::= expr_list expr | expr;
+
+expr ::= expr EQUI expr
+        | IDENT ASSIGN expr
+        | expr EQ expr
+        | expr MIN expr
+        | expr MON expr
+        | EXP_NUM 
+        | INT
+        | IDENT;

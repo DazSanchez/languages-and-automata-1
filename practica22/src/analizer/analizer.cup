@@ -1,0 +1,43 @@
+package analizer;
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+parser code {:
+	public static void main(String[] arg) {
+		/* Crea un objeto parser */
+		parser parserObj = new parser();
+		/* Asigna el Scanner */
+		Yylex miAnalizadorLexico = new Yylex(new InputStreamReader(System.in));
+		parserObj.setScanner(miAnalizadorLexico);
+		try{
+			parserObj.parse();
+		} catch(Exception x){
+			System.out.print("Error  No. ");
+		}
+	}
+:};
+
+terminal MULOP, ASSOP, MULASSOP, ADDASSOP;
+terminal EQUALS, IF, IFTHEN, IFTRUE, OFTRUE;
+terminal IDENT;
+
+non terminal expr_list, expr;
+
+precedence left IF, IFTHEN, IFTRUE, OFTRUE;
+precedence left MULOP, ASSOP, MULASSOP, ADDASSOP, EQUALS;
+
+expr_list ::= expr_list expr | expr expr;
+
+expr ::= expr MULOP expr
+        | expr ASSOP expr
+        | expr MULASSOP expr
+        | expr ADDASSOP expr
+        | expr EQUALS expr
+        | IF expr
+        | IFTHEN expr
+        | IFTRUE expr
+        | OFTRUE expr
+        | IDENT
+        ;

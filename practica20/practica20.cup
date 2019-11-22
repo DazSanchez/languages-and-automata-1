@@ -1,0 +1,41 @@
+package practica20;
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+parser code {:
+	public static void main(String[] arg) {
+		/* Crea un objeto parser */
+		parser parserObj = new parser();
+		/* Asigna el Scanner */
+		Yylex miAnalizadorLexico = new Yylex(new InputStreamReader(System.in));
+		parserObj.setScanner(miAnalizadorLexico);
+		try{
+			parserObj.parse();
+		} catch(Exception x){
+			System.out.print("Error  No. ");
+		}
+	}
+:};
+
+terminal PCOMA, MAS, MENOS, POR, ENTRE, MOD;
+terminal LPAREN, RPAREN;
+terminal Integer NUMERO;
+
+non terminal expr_list;
+non terminal Integer expr;
+
+precedence left MAS, MENOS;
+precedence left POR, ENTRE, MOD;
+
+expr_list ::= expr_list expr PCOMA | expr PCOMA;
+
+expr ::= expr MAS expr
+		| expr MENOS expr
+		| expr POR expr
+		| expr ENTRE expr 
+		| expr MOD expr
+		| LPAREN expr RPAREN
+		| NUMERO
+		;

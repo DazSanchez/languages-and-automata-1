@@ -1,0 +1,34 @@
+package analizer;
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+parser code {:
+	public static void main(String[] arg) {
+		/* Crea un objeto parser */
+		parser parserObj = new parser();
+		/* Asigna el Scanner */
+		Yylex miAnalizadorLexico = new Yylex(new InputStreamReader(System.in));
+		parserObj.setScanner(miAnalizadorLexico);
+		try{
+			parserObj.parse();
+		} catch(Exception x){
+			System.out.print("Error  No. ");
+		}
+	}
+:};
+
+terminal INT, OCT, HEX;
+terminal IDENT;
+
+non terminal expr_list, expr;
+
+precedence left INT, OCT, HEX, IDENT;
+
+expr_list ::= expr_list expr | expr;
+
+expr ::= OCT HEX
+        | HEX INT
+        | INT IDENT
+        | IDENT INT;

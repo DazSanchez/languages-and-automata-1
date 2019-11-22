@@ -1,0 +1,74 @@
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+
+parser code {:
+    public static void main(String[] arg) {
+        /* Crea un objeto parser */
+        parser parserObj = new parser();
+        /* Asigna el Scanner */
+        Yylex miAnalizadorLexico = new Yylex(new InputStreamReader(System.in));
+        parserObj.setScanner(miAnalizadorLexico);
+        try{
+            parserObj.parse();
+        } catch(Exception x){
+            System.err.println(x.getMessage());
+        }
+    }
+:};
+
+terminal STR, MAIN, IF, ELSE, WHILE, BREAK, PUTS, PUTW, INT, 
+         IDENT, ENT, OP, CP, EOL, OB, CB, SUM, RES, MUL, 
+         DIV, GT, LT, EQ, NE, OR, AND, ASG, NUM;
+
+non terminal expr_list, instance, asignation, arithmetic, operation, value, 
+    boolean_comp, boolean_symbols, relational_operation, boolean_complex_operation, 
+    if, fn_puts, fn_putw, fn_while, fn_main, component, component_list, code_block;
+
+precedence left INT;
+
+expr_list ::= instance instance fn_main;
+
+arithmetic ::= SUM | RES | MUL | DIV;
+
+boolean_symbols ::= GT | LT | EQ | NE;
+
+value ::= ENT | IDENT;
+
+instance ::= INT IDENT EOL;
+
+boolean_comp ::= IDENT boolean_symbols value;
+
+boolean_complex_operation ::= boolean_comp relational_operation boolean_comp;
+
+relational_operation ::= AND | OR ;
+
+operation ::= value arithmetic value; 
+
+asignation ::= IDENT ASG operation EOL 
+            | IDENT ASG value EOL;
+
+if ::= IF OP boolean_comp CP 
+    |  IF OP boolean_complex_operation CP ;
+
+fn_puts ::= PUTS OP STR CP EOL;
+
+fn_putw ::= PUTW OP value CP EOL 
+        | PUTW OP operation CP EOL;
+
+fn_while ::= WHILE OP boolean_comp CP 
+	        | WHILE OP boolean_complex_operation CP;
+
+fn_main ::= MAIN OP CP code_block;
+
+code_block ::= OB component_list CB | OB CB ;
+
+component_list ::= component_list component 
+                    | component ;
+
+component ::= asignation 
+            | if code_block 
+            | if code_block ELSE code_block 
+            | fn_while code_block 
+            | fn_puts 
+            | fn_putw;
